@@ -6,11 +6,11 @@ pg.init()
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 670
 FPS = 80
-TILE_SCALE = 3
+TILE_SCALE = 4
 
 class Platform(pg.sprite.Sprite):
     def __init__(self, image, x, y, width, height):
-        super().__init__()
+        super(Platform, self).__init__()
 
         self.image = pg.transform.scale(image, (width * TILE_SCALE, height * TILE_SCALE))
         self.rect = self.image.get_rect()
@@ -22,8 +22,15 @@ class Player(pg.sprite.Sprite):
     def __init__(self, map_width, map_height):
         super(Player, self).__init__()
 
-        self.image = pg.Surface((50, 50))
-        self.image.fill("red")
+        # self.image = pg.Surface((50, 50))
+        # self.image.fill("red")
+
+        # Добавляем анимацию персонажа
+        self.load_animations()
+        self.current_animation = self.idle_animation_right
+        self.image = self.current_animation[0]
+        self.current_image = 0
+
 
         self.rect = self.image.get_rect()
         self.rect.center = (200, 100)  # Начальное положение персонажа
@@ -35,6 +42,26 @@ class Player(pg.sprite.Sprite):
         self.is_jumping = False
         self.map_width = map_width * TILE_SCALE
         self.map_height = map_height * TILE_SCALE
+
+    def load_animations(self):
+        tile_size = 32
+        tile_scale = 3
+
+        self.idle_animation_right = []
+
+        num_images = 4
+        spritesheet = pg.image.load("sprites/Sprite Pack 3/4 - Tommy/Idle_Poses (32 x 32).png")
+
+        for i in range(num_images):
+            x = i * tile_size
+            y = 0
+            rect = pg.Rect(x, y, tile_size, tile_size)
+            image = spritesheet.subsurface(rect)
+            image = pg.transform.scale(image, (tile_size * tile_scale, tile_size * tile_scale))
+            self.idle_animation_right.append(image)
+
+        self.idle_animation_left = [pg.transform.flip(image, True, False) for image in self.idle_animation_right]
+
 
     def update(self, platforms):
         keys = pg.key.get_pressed()
@@ -55,26 +82,26 @@ class Player(pg.sprite.Sprite):
         self.velocity_y += self.gravity
         self.rect.y += self.velocity_y
 
-        # for platform in platforms:
+        for platform in platforms:
 
-        #     if platform.rect.collidepoint(self.rect.с):
-        #         self.rect.bottom = platform.rect.top
-        #         self.velocity_y = 0
-        #         self.is_jumping = False
+            if platform.rect.collidepoint(self.rect.midbottom):
+                self.rect.bottom = platform.rect.top
+                self.velocity_y = 0
+                self.is_jumping = False
 
-        #     if platform.rect.collidepoint(self.rect.midtop):
-        #         self.rect.top = platform.rect.bottom
-        #         self.velocity_y = 0
+            if platform.rect.collidepoint(self.rect.midtop):
+                self.rect.top = platform.rect.bottom
+                self.velocity_y = 0
 
-        #     if platform.rect.collidepoint(self.rect.midright):
-        #         self.rect.right = platform.rect.left
+            if platform.rect.collidepoint(self.rect.midright):
+                self.rect.right = platform.rect.left
 
-        #     if platform.rect.collidepoint(self.rect.midleft):
-        #         self.rect.left = platform.rect.right
+            if platform.rect.collidepoint(self.rect.midleft):
+                self.rect.left = platform.rect.right
 
-    # def jump(self):
-    #     self.velocity_y = -45
-    #     self.is_jumping = True
+    def jump(self):
+        self.velocity_y = -30
+        self.is_jumping = True
 
 class Game:
     def __init__(self):
@@ -129,14 +156,19 @@ class Game:
         self.camera_x = self.player.rect.x - SCREEN_WIDTH // 2
         self.camera_y = self.player.rect.y - SCREEN_HEIGHT // 2
 
-        self.camera_x = max(0, min(self.camera_x, self.map_pixel_width - SCREEN_WIDTH))
+        # Ограничения для камеры
+        self.camera_x = max(-20, min(self.camera_x, self.map_pixel_width - SCREEN_WIDTH) + 20)
         self.camera_y = max(0, min(self.camera_y, self.map_pixel_height - SCREEN_HEIGHT))
 
 
     def draw(self):
         self.screen.fill("light blue")
         
-        self.all_sprites.draw(self.screen)
+        # self.all_sprites.draw(self.screen)
+
+        # Движение камеры
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, sprite.rect.move(-self.camera_x, -self.camera_y))
 
         pg.display.flip()
 
