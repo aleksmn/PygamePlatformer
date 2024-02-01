@@ -123,14 +123,21 @@ class Player(pg.sprite.Sprite):
 
         # Проверка на коллизии с платформами
         for platform in platforms:
-            if pg.sprite.collide_mask(self, platform):
-                if self.velocity_y > 0:
-                    self.rect.y = platform.rect.y - self.rect.height
-                    self.velocity_y = 0
-                elif self.velocity_y < 0:
-                    self.rect.y = platform.rect.y + platform.rect.height
-                    self.velocity_y = 0
+
+            if platform.rect.collidepoint(self.rect.midbottom):
+                self.rect.bottom = platform.rect.top
+                self.velocity_y = 0
                 self.is_jumping = False
+
+            if platform.rect.collidepoint(self.rect.midtop):
+                self.rect.top = platform.rect.bottom
+                self.velocity_y = 0
+
+            if platform.rect.collidepoint(self.rect.midright):
+                self.rect.right = platform.rect.left
+
+            if platform.rect.collidepoint(self.rect.midleft):
+                self.rect.left = platform.rect.right
 
         if pg.time.get_ticks() - self.timer > self.interval:
             self.current_image += 1
