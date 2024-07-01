@@ -47,7 +47,7 @@ class Player(pg.sprite.Sprite):
         self.idle_animation_right = []
 
         num_images = 5
-        spritesheet = pg.image.load("sprites/Sprite Pack 3/2 - Twiggy/Idle (32 x 32).png")
+        spritesheet = pg.image.load("sprites/Sprite Pack 3/3 - Robot J5/Idle (32 x 32).png")
 
         for i in range(num_images):
             x = i * tile_size
@@ -61,8 +61,8 @@ class Player(pg.sprite.Sprite):
 
         self.move_animation_right = []
 
-        num_images = 6
-        spritesheet = pg.image.load("sprites/Sprite Pack 3/2 - Twiggy/Running (32 x 32).png")
+        num_images = 3
+        spritesheet = pg.image.load("sprites/Sprite Pack 3/3 - Robot J5/Running (32 x 32).png")
 
         for i in range(num_images):
             x = i * tile_size  # Начальная координата X изображения в спрайтшите

@@ -5,22 +5,31 @@
     },
     "activeFile": "level1.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
         "level1.tmx": {
-            "scale": 0.5,
+            "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1045,
-                "y": 477
+                "x": 1235.5,
+                "y": 478.5
             }
         },
         "level2.tmx": {
             "scale": 0.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1123,
-                "y": 579
+                "x": 909,
+                "y": 489
+            }
+        },
+        "level3.tmx": {
+            "scale": 0.12023437499999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 3243.6647173489287,
+                "y": 1218.4535412605587
             }
         },
         "monsters.tsx": {
@@ -29,7 +38,7 @@
         },
         "tileset.tsx": {
             "dynamicWrapping": true,
-            "scaleInDock": 0.25,
+            "scaleInDock": 0.125,
             "scaleInEditor": 0.25
         }
     },
@@ -40,13 +49,15 @@
     "map.width": 40,
     "openFiles": [
         "tileset.tsx",
-        "level1.tmx"
+        "level1.tmx",
+        "level2.tmx"
     ],
     "project": "platformer.tiled-project",
     "recentFiles": [
         "tileset.tsx",
-        "level1.tmx",
         "level2.tmx",
+        "level1.tmx",
+        "level3.tmx",
         "monsters.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
