@@ -130,6 +130,7 @@ class Game:
             self.update()
             self.draw()
             self.clock.tick(FPS)
+            pg.display.flip()  
         pg.quit()
         quit()
 
@@ -156,7 +157,7 @@ class Game:
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, sprite.rect.move(-self.camera_x, -self.camera_y))
 
-        pg.display.flip()     
+           
 
 
 if __name__ == "__main__":
