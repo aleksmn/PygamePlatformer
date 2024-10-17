@@ -86,10 +86,21 @@ class Player(pg.sprite.Sprite):
             self.jump()
 
         if keys[pg.K_a]:
+            if self.current_animation != self.move_animation_left:
+                self.current_animation = self.move_animation_left
             self.velocity_x = -10
         elif keys[pg.K_d]:
+            if self.current_animation != self.move_animation_right:
+                self.current_animation = self.move_animation_right
             self.velocity_x = 10
         else:
+            if self.current_animation == self.move_animation_right:
+                self.current_animation = self.idle_animation_right
+                self.current_image = 0
+            elif self.current_animation == self.move_animation_left:
+                self.current_animation = self.idle_animation_left
+                self.current_image = 0
+
             self.velocity_x = 0
 
         new_x = self.rect.x + self.velocity_x
