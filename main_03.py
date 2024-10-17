@@ -24,8 +24,6 @@ class Player(pg.sprite.Sprite):
         self.image = self.current_animation[0]
         self.current_image = 0
 
-
-
         self.rect = self.image.get_rect()
         self.rect.center = (200, 100)  # Начальное положение персонажа
 
@@ -36,6 +34,9 @@ class Player(pg.sprite.Sprite):
         self.is_jumping = False
         self.map_width = map_width * TILE_SCALE
         self.map_height = map_height * TILE_SCALE
+
+        self.timer = pg.time.get_ticks()
+        self.interval = 200
 
 
     def load_animations(self):
@@ -76,12 +77,6 @@ class Player(pg.sprite.Sprite):
         self.move_animation_left = [pg.transform.flip(image, True, False) for image in self.move_animation_right]
 
 
-
-
-
-
-
-
     
 
     def update(self, platforms):
@@ -120,7 +115,19 @@ class Player(pg.sprite.Sprite):
 
             if platform.rect.collidepoint(self.rect.midleft):
                 self.rect.left = platform.rect.right
-                
+
+
+        # Алгоритм смены кадров
+        if pg.time.get_ticks() - self.timer > self.interval:
+            self.current_image += 1
+            if self.current_image >= len(self.current_animation):
+                self.current_image = 0
+            self.image = self.current_animation[self.current_image]
+            self.timer = pg.time.get_ticks()
+
+
+
+
     def jump(self):
         self.velocity_y = -45
         self.is_jumping = True
