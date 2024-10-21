@@ -14,6 +14,86 @@ TILE_SCALE = 1.5
 font = pg.font.Font(None, 36)
 
 
+class Crab(pg.sprite.Sprite):
+    def __init__(self, map_width, map_height):
+        super().__init__()
+
+        self.load_animations()
+        self.image = self.animation[0]
+        self.current_image = 0
+        self.current_animation = self.animation
+        self.rect = self.image.get_rect()
+        self.rect.center = (250, 100)  # Начальное положение персонажа
+
+        # Начальная скорость и гравитация
+        self.velocity_x = 0
+        self.velocity_y = 0
+        self.gravity = 2
+        self.is_jumping = False
+        self.map_width = map_width * TILE_SCALE
+        self.map_height = map_height * TILE_SCALE
+
+        self.timer = pg.time.get_ticks()
+        self.interval = 300
+
+        self.direction = "left"
+
+
+    def load_animations(self):
+        tile_size = 32
+        tile_scale = 4
+
+        self.animation = []
+
+        image = pg.image.load("sprites/Sprite Pack 2/9 - Snip Snap Crab/Movement_(Flip_image_back_and_forth) (32 x 32).png")
+        image = pg.transform.scale(image, (tile_size * tile_scale, tile_size * tile_scale))
+    
+        self.animation.append(image)
+        self.animation.append(pg.transform.flip(image, True, False))
+
+
+    def update(self, platforms):
+
+        self.velocity_y += self.gravity
+        self.rect.y += self.velocity_y
+
+        if self.direction == "right":
+            self.velocity_x = 5
+        elif self.direction == "left":
+            self.velocity_x = -5
+
+
+        new_x = self.rect.x + self.velocity_x
+        if 0 <= new_x <= self.map_width - self.rect.width:
+            self.rect.x = new_x
+
+
+        for platform in platforms:
+
+            if platform.rect.collidepoint(self.rect.midbottom):
+                self.rect.bottom = platform.rect.top
+                self.velocity_y = 0
+                self.is_jumping = False
+
+            if platform.rect.collidepoint(self.rect.midtop):
+                self.rect.top = platform.rect.bottom
+                self.velocity_y = 0
+
+            if platform.rect.collidepoint(self.rect.midright):
+                self.rect.right = platform.rect.left
+
+            if platform.rect.collidepoint(self.rect.midleft):
+                self.rect.left = platform.rect.right
+
+
+        # Анимация
+        if pg.time.get_ticks() - self.timer > self.interval:
+            self.current_image += 1
+            if self.current_image >= len(self.current_animation):
+                self.current_image = 0
+            self.image = self.current_animation[self.current_image]
+            self.timer = pg.time.get_ticks()
+
 
 class Player(pg.sprite.Sprite):
     def __init__(self, map_width, map_height):
@@ -175,6 +255,9 @@ class Game:
         self.player = Player(self.map_pixel_width, self.map_pixel_height)
         self.all_sprites.add(self.player)
 
+        self.crab = Crab(self.map_pixel_width, self.map_pixel_height)
+        self.all_sprites.add(self.crab)
+
         for layer in self.tmx_map:
             if layer.name == "platforms":
                 for x, y, gid in layer:
@@ -213,6 +296,7 @@ class Game:
 
     def update(self):
         self.player.update(self.platforms)
+        self.crab.update(self.platforms)
 
         self.camera_x = self.player.rect.x - SCREEN_WIDTH // 2
         self.camera_y = self.player.rect.y - SCREEN_HEIGHT // 2
