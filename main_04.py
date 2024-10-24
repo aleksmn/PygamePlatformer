@@ -16,7 +16,7 @@ font = pg.font.Font(None, 36)
 
 class Crab(pg.sprite.Sprite):
     def __init__(self, map_width, map_height, start_pos, final_pos):
-        super(Crab, self).__init__()
+        super().__init__()
 
         self.load_animations()
         self.current_animation = self.animation
@@ -257,8 +257,6 @@ class Game:
         self.player = Player(self.map_pixel_width, self.map_pixel_height)
         self.all_sprites.add(self.player)
 
-        # self.crab = Crab(self.map_pixel_width, self.map_pixel_height)
-        # self.all_sprites.add(self.crab)
 
         with open("maps/level1_enemies.json", "r") as json_file:
             data = json.load(json_file)
