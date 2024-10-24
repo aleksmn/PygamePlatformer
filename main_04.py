@@ -15,15 +15,18 @@ font = pg.font.Font(None, 36)
 
 
 class Crab(pg.sprite.Sprite):
-    def __init__(self, map_width, map_height):
-        super().__init__()
+    def __init__(self, map_width, map_height, start_pos, final_pos):
+        super(Crab, self).__init__()
 
         self.load_animations()
-        self.image = self.animation[0]
-        self.current_image = 0
         self.current_animation = self.animation
+        self.image = self.current_animation[0]
+        self.current_image = 0
+
         self.rect = self.image.get_rect()
-        self.rect.center = (250, 100)  # Начальное положение персонажа
+        self.rect.bottomleft = start_pos
+        self.left_edge = start_pos[0]
+        self.right_edge = final_pos[0] + self.image.get_width()
 
         # Начальная скорость и гравитация
         self.velocity_x = 0
@@ -36,37 +39,37 @@ class Crab(pg.sprite.Sprite):
         self.timer = pg.time.get_ticks()
         self.interval = 300
 
-        self.direction = "left"
-
+        self.direction = "right"
 
     def load_animations(self):
-        tile_size = 32
         tile_scale = 4
+        tile_size = 32
 
         self.animation = []
 
-        image = pg.image.load("sprites/Sprite Pack 2/9 - Snip Snap Crab/Movement_(Flip_image_back_and_forth) (32 x 32).png")
+        image = pg.image.load(
+            "sprites/Sprite Pack 2/9 - Snip Snap Crab/Movement_(Flip_image_back_and_forth) (32 x 32).png")
         image = pg.transform.scale(image, (tile_size * tile_scale, tile_size * tile_scale))
-    
         self.animation.append(image)
         self.animation.append(pg.transform.flip(image, True, False))
 
-
     def update(self, platforms):
-
-        self.velocity_y += self.gravity
-        self.rect.y += self.velocity_y
 
         if self.direction == "right":
             self.velocity_x = 5
+            if self.rect.right >= self.right_edge:
+                self.direction = "left"
         elif self.direction == "left":
             self.velocity_x = -5
-
+            if self.rect.left <= self.left_edge:
+                self.direction = "right"
 
         new_x = self.rect.x + self.velocity_x
         if 0 <= new_x <= self.map_width - self.rect.width:
             self.rect.x = new_x
 
+        self.velocity_y += self.gravity
+        self.rect.y += self.velocity_y
 
         for platform in platforms:
 
@@ -85,8 +88,6 @@ class Crab(pg.sprite.Sprite):
             if platform.rect.collidepoint(self.rect.midleft):
                 self.rect.left = platform.rect.right
 
-
-        # Анимация
         if pg.time.get_ticks() - self.timer > self.interval:
             self.current_image += 1
             if self.current_image >= len(self.current_animation):
@@ -246,6 +247,7 @@ class Game:
 
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
 
         self.tmx_map = pytmx.load_pygame("maps/level1.tmx")
 
@@ -255,8 +257,24 @@ class Game:
         self.player = Player(self.map_pixel_width, self.map_pixel_height)
         self.all_sprites.add(self.player)
 
-        self.crab = Crab(self.map_pixel_width, self.map_pixel_height)
-        self.all_sprites.add(self.crab)
+        # self.crab = Crab(self.map_pixel_width, self.map_pixel_height)
+        # self.all_sprites.add(self.crab)
+
+        with open("maps/level1_enemies.json", "r") as json_file:
+            data = json.load(json_file)
+
+        for enemy in data["enemies"]:
+            if enemy["name"] == "Crab":
+                x1 = enemy["start_pos"][0] * TILE_SCALE * self.tmx_map.tilewidth
+                y1 = enemy["start_pos"][1] * TILE_SCALE * self.tmx_map.tilewidth
+
+                x2 = enemy["final_pos"][0] * TILE_SCALE * self.tmx_map.tilewidth
+                y2 = enemy["final_pos"][1] * TILE_SCALE * self.tmx_map.tilewidth
+
+                crab = Crab(self.map_pixel_width, self.map_pixel_height, [x1, y1], [x2, y2])
+                self.enemies.add(crab)
+                self.all_sprites.add(crab)
+                
 
         for layer in self.tmx_map:
             if layer.name == "platforms":
@@ -269,6 +287,9 @@ class Game:
                                             self.tmx_map.tileheight)
                         self.all_sprites.add(platform)
                         self.platforms.add(platform)
+
+
+
 
         self.camera_x = 0
         self.camera_y = 0
@@ -296,7 +317,8 @@ class Game:
 
     def update(self):
         self.player.update(self.platforms)
-        self.crab.update(self.platforms)
+        for enemy in self.enemies.sprites():
+            enemy.update(self.platforms)
 
         self.camera_x = self.player.rect.x - SCREEN_WIDTH // 2
         self.camera_y = self.player.rect.y - SCREEN_HEIGHT // 2
