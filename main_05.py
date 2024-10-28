@@ -322,7 +322,7 @@ class Game:
         for enemy in self.enemies.sprites():
             if pg.sprite.collide_mask(self.player, enemy):
                 self.player.get_damage()
-                print(self.player.hp)
+
 
         
         self.player.update(self.platforms)
@@ -343,7 +343,9 @@ class Game:
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, sprite.rect.move(-self.camera_x, -self.camera_y))
 
-           
+        pg.draw.rect(self.screen, pg.Color("red"), (10, 10, self.player.hp * 10, 10))
+        pg.draw.rect(self.screen, pg.Color("black"), (10, 10, 100, 10), 1)
+
 
 
 if __name__ == "__main__":
