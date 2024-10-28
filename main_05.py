@@ -242,8 +242,14 @@ class Platform(pg.sprite.Sprite):
 
 class Game:
     def __init__(self):
+
         self.screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pg.display.set_caption("Платформер")
+
+        self.setup()
+
+    def setup(self):
+        self.mode = "game"
         self.clock = pg.time.Clock()
         self.is_running = False
 
@@ -315,14 +321,22 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.is_running = False
+            if self.mode == "game over":
+                if event.type == pg.KEYDOWN:
+                    self.setup()
 
         keys = pg.key.get_pressed()
 
     def update(self):
+
+        if self.player.hp <= 0:
+            self.mode = "game over"
+            return
+
+        
         for enemy in self.enemies.sprites():
             if pg.sprite.collide_mask(self.player, enemy):
                 self.player.get_damage()
-
 
         
         self.player.update(self.platforms)
@@ -346,7 +360,10 @@ class Game:
         pg.draw.rect(self.screen, pg.Color("red"), (10, 10, self.player.hp * 10, 10))
         pg.draw.rect(self.screen, pg.Color("black"), (10, 10, 100, 10), 1)
 
-
+        if self.mode == "game over":
+            text = font.render("Вы проиграли", True, (255, 0, 0))
+            text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            self.screen.blit(text, text_rect)
 
 if __name__ == "__main__":
     game = Game()
