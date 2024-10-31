@@ -16,7 +16,7 @@ font = pg.font.Font(None, 36)
 
 class Ball(pg.sprite.Sprite):
     def __init__(self, player_rect, direction):
-        super(Ball, self).__init__()
+        super().__init__()
 
         self.direction = direction
         self.speed = 10
@@ -122,7 +122,7 @@ class Crab(pg.sprite.Sprite):
 
 class Player(pg.sprite.Sprite):
     def __init__(self, map_width, map_height):
-        super(Player, self).__init__()
+        super().__init__()
 
         self.load_animations()
         self.current_animation = self.idle_animation_right
@@ -146,6 +146,8 @@ class Player(pg.sprite.Sprite):
         self.hp = 10
         self.damage_timer = pg.time.get_ticks()
         self.damage_interval = 1000
+
+        self.direction = "right"
 
     def load_animations(self):
         tile_size = 32
@@ -194,10 +196,12 @@ class Player(pg.sprite.Sprite):
             self.jump()
 
         if keys[pg.K_a]:
+            self.direction = "left"
             if self.current_animation != self.move_animation_left:
                 self.current_animation = self.move_animation_left
             self.velocity_x = -10
         elif keys[pg.K_d]:
+            self.direction = "right"
             if self.current_animation != self.move_animation_right:
                 self.current_animation = self.move_animation_right
             self.velocity_x = 10
@@ -256,7 +260,7 @@ class Player(pg.sprite.Sprite):
 
 class Platform(pg.sprite.Sprite):
     def __init__(self, image, x, y, width, height):
-        super(Platform, self).__init__()
+        super().__init__()
 
         self.image = pg.transform.scale(image, (width * TILE_SCALE, height * TILE_SCALE))
         self.rect = self.image.get_rect()
@@ -349,12 +353,12 @@ class Game:
 
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:  # нажатие на Enter (в pygame это pg.K_RETURN)
-                    if self.player.current_animation in (
-                            self.player.idle_animation_right, self.player.move_animation_right):
-                        direction = "right"
-                    else:
-                        direction = "left"
-                    ball = Ball(self.player.rect, direction)
+                    # if self.player.current_animation in (
+                    #         self.player.idle_animation_right, self.player.move_animation_right):
+                    #     direction = "right"
+                    # else:
+                    #     direction = "left"
+                    ball = Ball(self.player.rect, self.player.direction)
                     self.balls.add(ball)
                     self.all_sprites.add(ball)
 
