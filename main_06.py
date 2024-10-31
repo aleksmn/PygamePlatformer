@@ -353,11 +353,6 @@ class Game:
 
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:  # нажатие на Enter (в pygame это pg.K_RETURN)
-                    # if self.player.current_animation in (
-                    #         self.player.idle_animation_right, self.player.move_animation_right):
-                    #     direction = "right"
-                    # else:
-                    #     direction = "left"
                     ball = Ball(self.player.rect, self.player.direction)
                     self.balls.add(ball)
                     self.all_sprites.add(ball)
