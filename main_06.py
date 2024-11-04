@@ -382,6 +382,10 @@ class Game:
 
         self.balls.update()
 
+        pg.sprite.groupcollide(self.balls, self.enemies, True, True)
+        pg.sprite.groupcollide(self.balls, self.platforms, True, False)
+
+
         self.camera_x = self.player.rect.x - SCREEN_WIDTH // 2
         self.camera_y = self.player.rect.y - SCREEN_HEIGHT // 2
 
