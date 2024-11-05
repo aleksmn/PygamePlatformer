@@ -15,7 +15,7 @@ font = pg.font.Font(None, 36)
 
 class Platform(pg.sprite.Sprite):
     def __init__(self, image, x, y, width, height):
-        super(Platform, self).__init__()
+        super().__init__()
 
         self.image = pg.transform.scale(image, (width * TILE_SCALE, height * TILE_SCALE))
         self.rect = self.image.get_rect()
