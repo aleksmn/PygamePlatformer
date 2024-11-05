@@ -14,6 +14,50 @@ TILE_SCALE = 1.5
 font = pg.font.Font(None, 36)
 
 
+class Coin(pg.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+
+        self.load_animations()
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+
+        self.rect.x = x
+        self.rect.y = y
+
+        self.current_image = 0
+        self.interval = 200
+        self.timer = pg.time.get_ticks()
+
+
+    def load_animations(self):
+        tile_size = 16
+        tile_scale = 4
+
+        self.images = []
+
+        num_images = 5
+        spritesheet = pg.image.load("sprites/Coin_Gems/MonedaD.png")
+
+        for i in range(num_images):
+            x = i * tile_size
+            y = 0
+            rect = pg.Rect(x, y, tile_size, tile_size)
+            image = spritesheet.subsurface(rect)
+            image = pg.transform.scale(image, (tile_size * tile_scale, tile_size * tile_scale))
+            self.images.append(image)
+
+
+    def update(self):
+        if pg.time.get_ticks() - self.timer > self.interval:
+            self.current_image += 1
+            if self.current_image >= len(self.images):
+                self.current_image = 0
+            self.image = self.images[self.current_image]
+            self.timer = pg.time.get_ticks()
+
+
+
 class Ball(pg.sprite.Sprite):
     def __init__(self, player_rect, direction):
         super().__init__()
@@ -326,7 +370,13 @@ class Game:
                         self.all_sprites.add(platform)
                         self.platforms.add(platform)
 
-
+            elif layer.name == "coins":
+                for x, y, gid in layer:
+                    tile = self.tmx_map.get_tile_image_by_gid(gid)
+                    if tile:
+                        coin = Coin(x * self.tmx_map.tilewidth * TILE_SCALE, y * self.tmx_map.tileheight * TILE_SCALE)
+                        self.all_sprites.add(coin)
+                        self.coins.add(coin)
 
 
         self.camera_x = 0
