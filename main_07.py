@@ -332,6 +332,7 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.balls = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
 
         self.tmx_map = pytmx.load_pygame("maps/level1.tmx")
 
@@ -431,6 +432,7 @@ class Game:
             enemy.update(self.platforms)
 
         self.balls.update()
+        self.coins.update()
 
         pg.sprite.groupcollide(self.balls, self.enemies, True, True)
         pg.sprite.groupcollide(self.balls, self.platforms, True, False)
