@@ -360,9 +360,13 @@ class Game:
         self.screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pg.display.set_caption("Платформер")
 
+        self.level = 1
+        
         self.setup()
 
     def setup(self):
+
+
         self.mode = "game"
         self.clock = pg.time.Clock()
         self.is_running = False
@@ -377,7 +381,7 @@ class Game:
         self.coins = pg.sprite.Group()
         self.portals = pg.sprite.Group()
 
-        self.tmx_map = pytmx.load_pygame("maps/level1.tmx")
+        self.tmx_map = pytmx.load_pygame(f"maps/level{self.level}.tmx")
 
         self.map_pixel_width = self.tmx_map.width * self.tmx_map.tilewidth * TILE_SCALE
         self.map_pixel_height = self.tmx_map.height * self.tmx_map.tileheight * TILE_SCALE
@@ -435,6 +439,8 @@ class Game:
         self.camera_y = 0
         self.camera_speed = 4
 
+        self.collected_coins = 0
+
         self.run()
 
     def run(self):
@@ -488,6 +494,21 @@ class Game:
 
         pg.sprite.groupcollide(self.balls, self.enemies, True, True)
         pg.sprite.groupcollide(self.balls, self.platforms, True, False)
+
+
+        hits = pg.sprite.spritecollide(self.player, self.coins, True)
+        for hit in hits:
+            self.collected_coins += 1
+            print(self.collected_coins)
+
+        hits = pg.sprite.spritecollide(self.player, self.portals, False, pg.sprite.collide_mask)
+        
+        for hit in hits:
+            self.level += 1
+            if self.level == 3:
+                quit()
+            self.setup()
+
 
 
         self.camera_x = self.player.rect.x - SCREEN_WIDTH // 2
