@@ -374,6 +374,8 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.balls = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
+        self.portals = pg.sprite.Group()
 
         self.tmx_map = pytmx.load_pygame("maps/level1.tmx")
 
@@ -419,7 +421,15 @@ class Game:
                         coin = Coin(x * self.tmx_map.tilewidth * TILE_SCALE, y * self.tmx_map.tileheight * TILE_SCALE)
                         self.all_sprites.add(coin)
                         self.coins.add(coin)
+                        
+            elif layer.name == "portal":
+                for x, y, gid in layer:
+                    tile = self.tmx_map.get_tile_image_by_gid(gid)
 
+                    if tile:
+                        portal = Portal(x * self.tmx_map.tilewidth * TILE_SCALE, y * self.tmx_map.tileheight * TILE_SCALE)
+                        self.all_sprites.add(portal)
+                        self.portals.add(portal)
 
         self.camera_x = 0
         self.camera_y = 0
@@ -473,6 +483,8 @@ class Game:
             enemy.update(self.platforms)
 
         self.balls.update()
+        self.coins.update()
+        self.portals.update()
 
         pg.sprite.groupcollide(self.balls, self.enemies, True, True)
         pg.sprite.groupcollide(self.balls, self.platforms, True, False)
