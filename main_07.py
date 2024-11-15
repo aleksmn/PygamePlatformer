@@ -384,6 +384,10 @@ class Game:
         self.camera_y = 0
         self.camera_speed = 4
 
+
+        self.collected_coins = 0
+
+
         self.run()
 
     def run(self):
@@ -436,6 +440,12 @@ class Game:
 
         pg.sprite.groupcollide(self.balls, self.enemies, True, True)
         pg.sprite.groupcollide(self.balls, self.platforms, True, False)
+
+
+        hits = pg.sprite.spritecollide(self.player, self.coins, True)
+        for hit in hits:
+            self.collected_coins += 1
+            print(self.collected_coins)
 
 
         self.camera_x = self.player.rect.x - SCREEN_WIDTH // 2
