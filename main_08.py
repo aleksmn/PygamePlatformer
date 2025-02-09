@@ -16,7 +16,7 @@ font = pg.font.Font(None, 36)
 
 class Portal(pg.sprite.Sprite):
     def __init__(self, x, y):
-        super(Portal, self).__init__()
+        super().__init__()
 
         self.load_animations()
         self.image = self.images[0]
@@ -36,7 +36,7 @@ class Portal(pg.sprite.Sprite):
         self.images = []
 
         num_images = 8
-        spritesheet = pg.image.load("sprites/Green Portal Sprite Sheet.png").convert_alpha()
+        spritesheet = pg.image.load("sprites/Green Portal Sprite Sheet.png")
 
         for i in range(num_images):
             x = i * tile_size
