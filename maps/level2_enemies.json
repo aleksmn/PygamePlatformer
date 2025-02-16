@@ -2,8 +2,8 @@
   "enemies": [
     {
       "name": "Crab",
-      "start_pos": [9, 10],
-      "final_pos": [11, 10]
+      "start_pos": [4, 10],
+      "final_pos": [6, 10]
     }
   ]
 
