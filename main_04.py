@@ -38,7 +38,6 @@ class Crab(pg.sprite.Sprite):
 
         self.timer = pg.time.get_ticks()
         self.interval = 300
-
         self.direction = "right"
 
     def load_animations(self):
@@ -47,8 +46,7 @@ class Crab(pg.sprite.Sprite):
 
         self.animation = []
 
-        image = pg.image.load(
-            "sprites/Sprite Pack 2/9 - Snip Snap Crab/Movement_(Flip_image_back_and_forth) (32 x 32).png")
+        image = pg.image.load(r"sprites/Sprite Pack 2/9 - Snip Snap Crab/Movement_(Flip_image_back_and_forth) (32 x 32).png")
         image = pg.transform.scale(image, (tile_size * tile_scale, tile_size * tile_scale))
         self.animation.append(image)
         self.animation.append(pg.transform.flip(image, True, False))
@@ -270,6 +268,7 @@ class Game:
                 y2 = enemy["final_pos"][1] * TILE_SCALE * self.tmx_map.tilewidth
 
                 crab = Crab(self.map_pixel_width, self.map_pixel_height, [x1, y1], [x2, y2])
+               
                 self.enemies.add(crab)
                 self.all_sprites.add(crab)
                 

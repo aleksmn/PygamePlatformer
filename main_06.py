@@ -29,7 +29,8 @@ class Ball(pg.sprite.Sprite):
             self.rect.x = player_rect.right
         else:
             self.rect.x = player_rect.left
-        self.rect.y = player_rect.centery
+        self.rect.y = player_rect.centery + 20
+
 
     def update(self):
         if self.direction == "right":
