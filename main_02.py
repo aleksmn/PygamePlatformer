@@ -16,7 +16,7 @@ font = pg.font.Font(None, 36)
 
 class Player(pg.sprite.Sprite):
     def __init__(self, map_width, map_height):
-        super(Player, self).__init__()
+        super().__init__()
 
         self.image = pg.Surface((50, 50))
         self.image.fill("red")
@@ -45,12 +45,16 @@ class Player(pg.sprite.Sprite):
         else:
             self.velocity_x = 0
 
+
         new_x = self.rect.x + self.velocity_x
+
         if 0 <= new_x <= self.map_width - self.rect.width:
             self.rect.x = new_x
 
+
         self.velocity_y += self.gravity
         self.rect.y += self.velocity_y
+
 
         for platform in platforms:
 
@@ -119,7 +123,7 @@ class Game:
 
         self.camera_x = 0
         self.camera_y = 0
-        self.camera_speed = 4
+
 
         self.run()
 
