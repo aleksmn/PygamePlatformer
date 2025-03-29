@@ -39,7 +39,8 @@ class Game:
         self.is_running = False
 
         self.background = pg.image.load("background.png")
-        
+        self.background = pg.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
 

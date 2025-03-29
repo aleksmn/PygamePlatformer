@@ -45,13 +45,12 @@ class Player(pg.sprite.Sprite):
         else:
             self.velocity_x = 0
 
-
         new_x = self.rect.x + self.velocity_x
 
         if 0 <= new_x <= self.map_width - self.rect.width:
             self.rect.x = new_x
 
-
+        # Гравитация
         self.velocity_y += self.gravity
         self.rect.y += self.velocity_y
 
@@ -92,6 +91,12 @@ class Game:
     def __init__(self):
         self.screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pg.display.set_caption("Платформер")
+        self.level = 1
+
+        self.setup()
+
+    def setup(self):
+        self.mode = "game"
         self.clock = pg.time.Clock()
         self.is_running = False
 
