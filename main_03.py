@@ -158,6 +158,9 @@ class Game:
     def __init__(self):
         self.screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pg.display.set_caption("Платформер")
+        self.setup()
+
+    def setup(self):
         self.clock = pg.time.Clock()
         self.is_running = False
 
